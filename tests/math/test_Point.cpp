@@ -68,13 +68,13 @@ TEST_CASE("Point") {
 		SECTION("adding a vector to a point should produce another point") {
 			auto p = GENERATE(
 				table<std::tuple<Point, Vector>, Point>({
-					{std::tuple<Point, Vector>(Point( 0, 0, 0), Vector(4, 5, 6)), Point( 4, 5, 6)},
-					{std::tuple<Point, Vector>(Point( 1, 1, 1), Vector(4, 5, 6)), Point( 5, 6, 7)},
-					{std::tuple<Point, Vector>(Point( 1, 2, 3), Vector(4, 5, 6)), Point( 5, 7, 9)},
-					{std::tuple<Point, Vector>(Point( 1, 2, 3), Vector(1, 1, 1)), Point( 2, 3, 4)},
-					{std::tuple<Point, Vector>(Point(-1,-2,-3), Vector(4, 5, 6)), Point( 3, 3, 3)},
-					{std::tuple<Point, Vector>(Point(-3,-2,-1), Vector(1, 2, 3)), Point(-2, 0, 2)},
-					{std::tuple<Point, Vector>(Point(-4, 1,-2), Vector(0, 0, 0)), Point(-4, 1,-2)}
+					{std::tuple(Point( 0, 0, 0), Vector(4, 5, 6)), Point( 4, 5, 6)},
+					{std::tuple(Point( 1, 1, 1), Vector(4, 5, 6)), Point( 5, 6, 7)},
+					{std::tuple(Point( 1, 2, 3), Vector(4, 5, 6)), Point( 5, 7, 9)},
+					{std::tuple(Point( 1, 2, 3), Vector(1, 1, 1)), Point( 2, 3, 4)},
+					{std::tuple(Point(-1,-2,-3), Vector(4, 5, 6)), Point( 3, 3, 3)},
+					{std::tuple(Point(-3,-2,-1), Vector(1, 2, 3)), Point(-2, 0, 2)},
+					{std::tuple(Point(-4, 1,-2), Vector(0, 0, 0)), Point(-4, 1,-2)}
 				})
 			);
 
