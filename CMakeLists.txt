@@ -16,10 +16,6 @@ target_include_directories(nyxtracer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 add_executable (NyxTracerExe "NyxTracer.cpp" "NyxTracer.hpp")
 
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET NyxTracerExe PROPERTY CXX_STANDARD 20)
-endif()
-
 # TODO: Add tests and install targets if needed.
 add_subdirectory(lib/Catch2)
 add_executable(NyxTracerTest "tests/utils/Util.cpp" "tests/math/test_Point.cpp" "tests/math/test_Vector.cpp")
@@ -33,3 +29,8 @@ install(
 	TARGETS NyxTracerTest
 	RUNTIME DESTINATION bin
 )
+
+if (CMAKE_VERSION VERSION_GREATER 3.12)
+  set_property(TARGET NyxTracerExe PROPERTY CXX_STANDARD 20)
+  set_property(TARGET NyxTracerTest PROPERTY CXX_STANDARD 20)
+endif()
