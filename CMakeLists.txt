@@ -5,15 +5,31 @@ cmake_minimum_required (VERSION 3.8)
 
 project ("NyxTracer")
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+
+include(CTest)
+enable_testing()
+
 # Add source to this project's executable.
-add_executable (NyxTracer "NyxTracer.cpp" "NyxTracer.h")
+add_library(nyxtracer "src/math/Point.cpp" "src/math/Vector.cpp")
+target_include_directories(nyxtracer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+add_executable (NyxTracerExe "NyxTracer.cpp" "NyxTracer.hpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET NyxTracer PROPERTY CXX_STANDARD 20)
+  set_property(TARGET NyxTracerExe PROPERTY CXX_STANDARD 20)
 endif()
 
 # TODO: Add tests and install targets if needed.
 add_subdirectory(lib/Catch2)
-file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false tests/*.cpp)
-add_executable(tests ${TEST_SOURCES})
-target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
+add_executable(NyxTracerTest "tests/utils/Util.cpp" "tests/math/test_Point.cpp" "tests/math/test_Vector.cpp")
+target_link_libraries(NyxTracerTest PRIVATE Catch2::Catch2WithMain PUBLIC nyxtracer)
+target_include_directories(NyxTracerTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+
+include(ParseAndAddCatchTests)
+ParseAndAddCatchTests(NyxTracerTest)
+
+install(
+	TARGETS NyxTracerTest
+	RUNTIME DESTINATION bin
+)
