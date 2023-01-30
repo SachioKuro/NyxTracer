@@ -1,8 +1,9 @@
 #pragma once
 
+#include <catch2/catch_test_macros.hpp>
+
 #include "math/Point.hpp"
 #include "math/Vector.hpp"
-#include <catch2/catch_test_macros.hpp>
 
 
 template<>
@@ -19,9 +20,33 @@ struct Catch::StringMaker<Vector> {
 	}
 };
 
+template <typename T, typename U>
+class hasAddtionOperator
+{
+	template <typename C, typename = decltype(std::declval<C>() + std::declval<U>())>
+	static std::true_type test(int) { return std::true_type(); }
+	template <typename C>
+	static std::false_type test(...) { return std::false_type(); }
+
+public:
+	static constexpr bool value = decltype(test<T>(0))::value;
+};
+
+template <typename T, typename U>
+class hasSubstractionOperator
+{
+	template <typename C, typename = decltype(std::declval<C>() - std::declval<U>())>
+	static std::true_type test(int) { return std::true_type(); }
+	template <typename C>
+	static std::false_type test(...) { return std::false_type(); }
+
+public:
+	static constexpr bool value = decltype(test<T>(0))::value;
+};
+
 extern bool isClose(float a, float b, float epsilon = 0.0001f);
 
 extern float randomFloat(float min, float max);
 
-extern Point randomPoint(float minValue, float maxValue);
-extern Vector randomVector(float minValue, float maxValue);
+extern Point randomPoint(float minValue = -100, float maxValue = 100);
+extern Vector randomVector(float minValue = -100, float maxValue = 100);

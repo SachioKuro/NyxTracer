@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cmath>
+
+#include "Constants.hpp"
 #include "Vector.hpp"
 
 struct Point {
@@ -11,7 +14,7 @@ struct Point {
 	float w = 1.0f;
 
 	bool operator==(const Point& other) const {
-		return x == other.x && y == other.y && z == other.z;
+		return abs(x - other.x) < EPSILON && abs(y - other.y) < EPSILON && abs(z - other.z) < EPSILON;
 	}
 	
 	bool operator!=(const Point& other) const {
@@ -24,5 +27,9 @@ struct Point {
 
 	Point operator-(const Vector& other) const {
 		return Point(x - other.x, y - other.y, z - other.z);
+	}
+
+	Vector operator-(const Point& other) const {
+		return Vector(x - other.x, y - other.y, z - other.z);
 	}
 };

@@ -1,6 +1,12 @@
 #pragma once
 
+#include <cmath>
+
+#include "Constants.hpp"
+
+
 struct Vector {
+	
 	Vector(float x, float y, float z) : x(x), y(y), z(z) { }
 
 	float x;
@@ -9,7 +15,7 @@ struct Vector {
 	float w = 0.0f;
 
 	bool operator==(const Vector& other) const {
-		return x == other.x && y == other.y && z == other.z;
+		return abs(x - other.x) < EPSILON && abs(y - other.y) < EPSILON && abs(z - other.z) < EPSILON;
 	}
 
 	bool operator!=(const Vector& other) const {
@@ -26,5 +32,35 @@ struct Vector {
 
 	Vector operator-() const {
 		return Vector(-x, -y, -z);
+	}
+	
+	Vector operator*(float scalar) const {
+		return Vector(x * scalar, y * scalar, z * scalar);
+	}
+	
+	Vector operator/(float scalar) const {
+		return Vector(x / scalar, y / scalar, z / scalar);
+	}
+
+	float length() const {
+		return std::sqrt(x * x + y * y + z * z);
+	}
+
+	Vector normalize() const {
+		float length = this->length();
+		
+		if (length == 0) {
+			return Vector(0, 0, 0);
+		}
+
+		return *this / length;
+	}
+	
+	float dot(const Vector& other) const {
+		return x * other.x + y * other.y + z * other.z;
+	}
+
+	Vector cross(const Vector& other) const {
+		return Vector(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
 	}
 };

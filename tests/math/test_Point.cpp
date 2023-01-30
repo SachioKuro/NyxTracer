@@ -64,8 +64,10 @@ TEST_CASE("Point") {
 		}
 	}
 	
-	SECTION("Add") {
+	SECTION("Addition") {
 		SECTION("adding a vector to a point should produce another point") {
+			REQUIRE(hasAddtionOperator<Point, Vector>::value);
+			
 			auto p = GENERATE(
 				table<std::tuple<Point, Vector>, Point>({
 					{{Point( 0, 0, 0), Vector(4, 5, 6)}, Point( 4, 5, 6)},
@@ -83,6 +85,64 @@ TEST_CASE("Point") {
 			CAPTURE(std::get<1>(p));
 			
 			REQUIRE(std::get<0>(std::get<0>(p)) + std::get<1>(std::get<0>(p)) == std::get<1>(p));
+		}
+
+		SECTION("adding a point to a vector should not be possible") {
+			REQUIRE(!hasAddtionOperator<Vector, Point>::value);
+		}
+
+		SECTION("adding 2 points should not be possible") {
+			REQUIRE(!hasAddtionOperator<Point, Point>::value);
+		}
+	}
+
+	SECTION("Substraction") {
+		SECTION("substracting a vector from a point should produce another point") {
+			REQUIRE(hasSubstractionOperator<Point, Vector>::value);
+
+			auto p = GENERATE(
+				table<std::tuple<Point, Vector>, Point>({
+					{{Point(0, 0, 0), Vector(4, 5, 6)}, Point(-4, -5, -6)},
+					{{Point(1, 1, 1), Vector(4, 5, 6)}, Point(-3, -4, -5)},
+					{{Point(1, 2, 3), Vector(4, 5, 6)}, Point(-3, -3, -3)},
+					{{Point(1, 2, 3), Vector(1, 1, 1)}, Point(0, 1, 2)},
+					{{Point(-1,-2,-3), Vector(4, 5, 6)}, Point(-5, -7, -9)},
+					{{Point(-3,-2,-1), Vector(1, 2, 3)}, Point(-4, -4, -4)},
+					{{Point(-4, 1,-2), Vector(0, 0, 0)}, Point(-4, 1,-2)}
+					})
+			);
+
+			CAPTURE(std::get<0>(std::get<0>(p)));
+			CAPTURE(std::get<1>(std::get<0>(p)));
+			CAPTURE(std::get<1>(p));
+
+			REQUIRE(std::get<0>(std::get<0>(p)) - std::get<1>(std::get<0>(p)) == std::get<1>(p));
+		}
+
+		SECTION("substracting a point from a vector should not be possible") {
+			REQUIRE(!hasSubstractionOperator<Vector, Point>::value);
+		}
+
+		SECTION("substracting 2 points should produce another vector") {
+			REQUIRE(hasSubstractionOperator<Point, Point>::value);
+
+			auto p = GENERATE(
+				table<std::tuple<Point, Point>, Vector>({
+					{{Point(0, 0, 0), Point(4, 5, 6)}, Vector(-4, -5, -6)},
+					{{Point(1, 1, 1), Point(4, 5, 6)}, Vector(-3, -4, -5)},
+					{{Point(1, 2, 3), Point(4, 5, 6)}, Vector(-3, -3, -3)},
+					{{Point(1, 2, 3), Point(1, 1, 1)}, Vector(0, 1, 2)},
+					{{Point(-1,-2,-3), Point(4, 5, 6)}, Vector(-5, -7, -9)},
+					{{Point(-3,-2,-1), Point(1, 2, 3)}, Vector(-4, -4, -4)},
+					{{Point(-4, 1,-2), Point(0, 0, 0)}, Vector(-4, 1,-2)}
+					})
+			);
+
+			CAPTURE(std::get<0>(std::get<0>(p)));
+			CAPTURE(std::get<1>(std::get<0>(p)));
+			CAPTURE(std::get<1>(p));
+
+			REQUIRE(std::get<0>(std::get<0>(p)) - std::get<1>(std::get<0>(p)) == std::get<1>(p));
 		}
 	}
 }
