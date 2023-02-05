@@ -5,7 +5,7 @@
 #include <tuple>
 
 #include "utils/Util.hpp"
-#include "math/Point.hpp"
+#include "graphics/Point.hpp"
 
 
 TEST_CASE("Point") {

@@ -5,7 +5,7 @@
 #include <tuple>
 
 #include "utils/Util.hpp"
-#include "math/Vector.hpp"
+#include "graphics/Vector.hpp"
 
 TEST_CASE("Vector") {
 	srand((unsigned)time(0));
@@ -64,7 +64,7 @@ TEST_CASE("Vector") {
 	}
 
 	SECTION("Addition") {
-		SECTION("adding a vector to a vector should produce another point") {
+		SECTION("adding a vector to a vector should produce another vector") {
 			REQUIRE(hasAddtionOperator<Point, Vector>::value);
 
 			auto p = GENERATE(

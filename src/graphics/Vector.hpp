@@ -1,18 +1,18 @@
 #pragma once
 
 #include <cmath>
+#include <iostream>
 
 #include "Constants.hpp"
 
 
 struct Vector {
-	
-	Vector(float x, float y, float z) : x(x), y(y), z(z) { }
 
-	float x;
-	float y;
-	float z;
-	float w = 0.0f;
+	Vector() = default;
+	Vector(float x, float y, float z) : x(x), y(y), z(z), w(0) { }
+	Vector(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) { }
+
+	float x, y, z, w;
 
 	bool operator==(const Vector& other) const {
 		return abs(x - other.x) < EPSILON && abs(y - other.y) < EPSILON && abs(z - other.z) < EPSILON;
@@ -61,6 +61,12 @@ struct Vector {
 	}
 
 	Vector cross(const Vector& other) const {
-		return Vector(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
+		return Vector(
+			y * other.z - z * other.y,
+			z * other.x - x * other.z,
+			x * other.y - y * other.x
+		);
 	}
 };
+
+std::ostream& operator<<(std::ostream&, const Vector&);
