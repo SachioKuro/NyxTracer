@@ -2,41 +2,56 @@
 //
 
 #include <iostream>
+#include <fstream>
+#include <cmath>
+#include <optional>
+#include <map>
 
+#include "common/UUID.hpp"
+#include "graphics/Transformation.hpp"
 #include "graphics/Canvas.hpp"
+#include "graphics/Material.hpp"
+#include "graphics/Light.hpp"
 #include "graphics/Color.hpp"
 #include "graphics/Matrix.hpp"
+#include "graphics/Sphere.hpp"
+#include "graphics/Ray.hpp"
 
 int main()
 {
-	std::cout << Matrix::Identity() << std::endl;
-	std::cout << Matrix::Identity().inverse() << std::endl;
+	Canvas canvas(500, 500);
 
-	Matrix m1{
-		MatrixRow4D(6, 4, 4, 4),
-		MatrixRow4D(5, 5, 7, 6),
-		MatrixRow4D(4, -9, 3, -7),
-		MatrixRow4D(9, 1, 7, -6)
-	};
-	std::cout << m1 << std::endl;
-	std::cout << m1.inverse() << std::endl;
-	std::cout << m1 * m1.inverse() << std::endl;
-	
-	Matrix m2{
-		MatrixRow4D(-5, 2, 6, -8),
-		MatrixRow4D(1, -5, 1, 8),
-		MatrixRow4D(7, 7, -6, -7),
-		MatrixRow4D(1, -3, 7, 4)
-	};
-	std::cout << m2 << std::endl;
-	std::cout << m2.transpose().inverse() << std::endl;
-	std::cout << m2.inverse().transpose() << std::endl;
+	std::map<uuid64, Sphere> spheres{};
 
-	Vector v1{ 1, 2, 3, 1 };
-	std::cout << v1 << std::endl;
-	std::cout << Matrix::Identity() * v1 << std::endl;
-	Matrix m3 = Matrix::Identity();
-	m3(0, 0) = 2;
-	m3(1, 1) = 2.5;
-	std::cout << m3 * v1 << std::endl;
+	Sphere sphere;
+	sphere.material = BasicMaterial(Color(1, 0, 0.6), .1, .9, .9, 200);
+	sphere.transform = Transformation().scale(200, 200, 1).toMatrix();
+	spheres[sphere.getUUID()] = sphere;
+
+	PointLight pointLight(Point(200, 100, -1), Color(1, 1, 1));
+
+	for (auto row = 0; row < 500; ++row) {
+		for (auto col = 0; col < 500; ++col) {
+			Ray ray(Point(0, 0, -2), Vector(row - 250, col - 250, 1).normalize());
+
+			std::optional<Intersection> hit = sphere.intersect(ray).hit();
+
+			if (hit.has_value()) {
+				Sphere s = spheres[hit->obj];
+				Point position = ray.position(hit->t);
+				Vector normal = s.normalAt(position);
+				Vector eye = -ray.direction;
+
+				canvas(row, col) = s.material.lighting(pointLight, position, eye, normal);
+			}
+		}
+	}
+
+	std::ofstream ofs;
+	ofs.open("C:\\Users\\Kuro\\Desktop\\Image.ppm", std::ios::out);
+
+	if (ofs) {
+		ofs << canvas.toPPM() << std::endl;
+		ofs.close();
+	}
 }

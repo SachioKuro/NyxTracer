@@ -11,14 +11,14 @@ include(CTest)
 enable_testing()
 
 # Add source to this project's executable.
-add_library(nyxtracer  "src/graphics/Utils.cpp" "src/graphics/Matrix.cpp" "src/graphics/Vector.cpp")
+add_library(nyxtracer  "src/graphics/Utils.cpp" "src/graphics/Matrix.cpp" "src/graphics/Vector.cpp" "src/common/UUID.cpp")
 target_include_directories(nyxtracer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-add_executable (NyxTracerExe  "src/Playground.cpp" "src/graphics/Matrix.cpp" "src/graphics/Vector.cpp")
+add_executable (NyxTracerExe  "src/Playground.cpp" "src/graphics/Matrix.cpp" "src/graphics/Vector.cpp" "src/common/UUID.cpp")
 
 # TODO: Add tests and install targets if needed.
 add_subdirectory(lib/Catch2)
-add_executable(NyxTracerTest "tests/utils/Util.cpp" "tests/graphics/test_Point.cpp" "tests/graphics/test_Vector.cpp" "tests/graphics/test_Color.cpp" "tests/graphics/test_Canvas.cpp" "tests/graphics/test_Matrix.cpp" "tests/graphics/test_Transformation.cpp")
+add_executable(NyxTracerTest "tests/utils/Util.cpp" "tests/graphics/test_Point.cpp" "tests/graphics/test_Vector.cpp" "tests/graphics/test_Color.cpp" "tests/graphics/test_Canvas.cpp" "tests/graphics/test_Matrix.cpp" "tests/graphics/test_Transformation.cpp" "tests/graphics/test_Ray.cpp" "tests/graphics/test_Sphere.cpp" "tests/graphics/test_Intersections.cpp" "tests/graphics/test_Light.cpp" "tests/graphics/test_Material.cpp")
 target_link_libraries(NyxTracerTest PRIVATE Catch2::Catch2WithMain PUBLIC nyxtracer)
 target_include_directories(NyxTracerTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 

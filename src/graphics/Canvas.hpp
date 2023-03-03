@@ -3,6 +3,7 @@
 #include <sstream>
 #include <format>
 
+#include "Point.hpp"
 #include "Color.hpp"
 
 class Canvas {
@@ -16,6 +17,10 @@ public:
 
 	Color operator()(uint16_t x, uint16_t y) const { return _pixels[y * _width + x]; }
 	Color& operator()(uint16_t x, uint16_t y) { return _pixels[y * _width + x]; }
+
+	bool validCoordinate(Point p) {
+		return p.x > 0 && p.x < _width && p.y > 0 && p.y < _width;
+	}
 
 	std::string toPPM() const {
 		std::stringstream ss;

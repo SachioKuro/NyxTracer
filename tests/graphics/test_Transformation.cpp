@@ -126,4 +126,91 @@ TEST_CASE("Transformation") {
 
 		REQUIRE(isClose(inverseRotationHalfQuarter * p, Point(sqrt(2) / 2, sqrt(2) / 2, 0)));
 	}
+
+	SECTION("SHEARING") {
+		auto p = GENERATE(
+			table<std::tuple<Matrix, Point>, Point>({
+				{
+					{Transformation::Shearing(1, 0, 0, 0, 0, 0), Point(2, 3, 4)},
+					Point(5, 3, 4)
+				},
+				{
+					{Transformation::Shearing(2.5, 0, 0, 0, 0, 0), Point(2, 3, 4)},
+					Point(9.5, 3, 4)
+				},
+				{
+					{Transformation::Shearing(0, 1, 0, 0, 0, 0), Point(2, 3, 4)},
+					Point(6, 3, 4)
+				},
+				{
+					{Transformation::Shearing(0, 2.5, 0, 0, 0, 0), Point(2, 3, 4)},
+					Point(12, 3, 4)
+				},
+				{
+					{Transformation::Shearing(0, 0, 1, 0, 0, 0), Point(2, 3, 4)},
+					Point(2, 5, 4)
+				},
+				{
+					{Transformation::Shearing(0, 0, 2.5, 0, 0, 0), Point(2, 3, 4)},
+					Point(2, 8, 4)
+				},
+				{
+					{Transformation::Shearing(0, 0, 0, 1, 0, 0), Point(2, 3, 4)},
+					Point(2, 7, 4)
+				},
+				{
+					{Transformation::Shearing(0, 0, 0, 2.5, 0, 0), Point(2, 3, 4)},
+					Point(2, 13, 4)
+				},
+				{
+					{Transformation::Shearing(0, 0, 0, 0, 1, 0), Point(2, 3, 4)},
+					Point(2, 3, 6)
+				},
+				{
+					{Transformation::Shearing(0, 0, 0, 0, 2.5, 0), Point(2, 3, 4)},
+					Point(2, 3, 9)
+				},
+				{
+					{Transformation::Shearing(0, 0, 0, 0, 0, 1), Point(2, 3, 4)},
+					Point(2, 3, 7)
+				},
+				{
+					{Transformation::Shearing(0, 0, 0, 0, 0, 2.5), Point(2, 3, 4)},
+					Point(2, 3, 11.5)
+				}
+			})
+		);
+
+		CAPTURE(std::get<0>(std::get<0>(p)));
+		CAPTURE(std::get<1>(std::get<0>(p)));
+		CAPTURE(std::get<1>(p));
+
+		REQUIRE(std::get<0>(std::get<0>(p)) * std::get<1>(std::get<0>(p)) == std::get<1>(p));
+	}
+
+	SECTION("Chaining") {
+		Point p(1, 0, 1);
+		Matrix rotationX = Transformation::RotationX(M_PI / 2);
+		Matrix scaling = Transformation::Scaling(5, 5, 5);
+		Matrix translation = Transformation::Translation(10, 5, 7);
+
+		Point p2 = rotationX * p;
+		REQUIRE(p2 == Point(1, -1, 0));
+
+		Point p3 = scaling * p2;
+		REQUIRE(p3 == Point(5, -5, 0));
+
+		Point p4 = translation * p3;
+		REQUIRE(p4 == Point(15, 0, 7));
+
+		REQUIRE(translation * scaling * rotationX * p == Point(15, 0, 7));
+
+		REQUIRE(
+			Transformation()
+			.rotateX(M_PI / 2)
+			.scale(5, 5, 5)
+			.translate(10, 5, 7)
+			.toMatrix() * p == Point(15, 0, 7)
+		);
+	}
 }

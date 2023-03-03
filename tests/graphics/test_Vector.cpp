@@ -491,4 +491,19 @@ TEST_CASE("Vector") {
 			REQUIRE(std::get<0>(std::get<0>(p)).cross(std::get<1>(std::get<0>(p))) == std::get<1>(p));
 		}
 	}
+
+	SECTION("Reflection") {
+		auto p = GENERATE(
+			table<std::tuple<Vector, Vector>, Vector>({
+				{{Vector(1, -1, 0), Vector(0, 1, 0)}, Vector(1, 1, 0)},
+				{{Vector(0, -1, 0), Vector(sqrt(2) / 2, sqrt(2) / 2, 0)}, Vector(1, 0, 0)}
+			})
+		);
+
+		CAPTURE(std::get<0>(std::get<0>(p)));
+		CAPTURE(std::get<1>(std::get<0>(p)));
+		CAPTURE(std::get<1>(p));
+
+		REQUIRE(std::get<0>(std::get<0>(p)).reflect(std::get<1>(std::get<0>(p))) == std::get<1>(p));
+	}
 }

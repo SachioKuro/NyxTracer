@@ -14,6 +14,10 @@ bool isClose(Point a, Point b, float epsilon) {
 	return isClose(a.x, b.x, epsilon) && isClose(a.y, b.y, epsilon) && isClose(a.z, b.z, epsilon);
 }
 
+bool isClose(Vector a, Vector b, float epsilon) {
+	return isClose(a.x, b.x, epsilon) && isClose(a.y, b.y, epsilon) && isClose(a.z, b.z, epsilon);
+}
+
 bool isClose(Matrix a, Matrix b, float epsilon) {
 	if (a.rows() != b.rows() || a.cols() != b.cols())
 		return false;

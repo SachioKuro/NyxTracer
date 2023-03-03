@@ -140,7 +140,7 @@ public:
 		);
 	}
 
-	Matrix transpose() {
+	Matrix transpose() const {
 		Matrix m = *this;
 		for (int i = 0; i < _rows; ++i)
 			for (int j = 0; j < _cols; ++j)
@@ -148,7 +148,7 @@ public:
 		return m;
 	}
 
-	float determinant() {
+	float determinant() const {
 		if (_rows == 2 && _cols == 2) {
 			return _data[0] * _data[3] - _data[1] * _data[2];
 		}
@@ -161,7 +161,7 @@ public:
 		}
 	}
 
-	Matrix submatrix(int row, int col) {
+	Matrix submatrix(int row, int col) const {
 		Matrix out(_rows - 1, _cols - 1);
 		int i_sub = 0;
 		for (int i = 0; i < _rows; ++i) {
@@ -178,11 +178,11 @@ public:
 		return out;
 	}
 
-	float minor(int row, int col) {
+	float minor(int row, int col) const  {
 		return this->submatrix(row, col).determinant();
 	}
 
-	float cofactor(int row, int col) {
+	float cofactor(int row, int col) const {
 		// + - + - +
 		// - + - + -
 		// + - + - +
@@ -191,11 +191,11 @@ public:
 		return this->minor(row, col) * (1 - ((row + col) % 2) * 2);
 	}
 
-	bool isInvertable() {
+	bool isInvertable() const {
 		return this->determinant() != 0;
 	}
 
-	Matrix inverse() {
+	Matrix inverse() const {
 		if (!this->isInvertable())
 			throw std::exception("Matrix is not invertable");
 

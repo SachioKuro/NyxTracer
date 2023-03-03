@@ -67,6 +67,10 @@ struct Vector {
 			x * other.y - y * other.x
 		);
 	}
+
+	Vector reflect(const Vector& normal) const {
+		return (*this) - (normal * 2 * this->dot(normal));
+	}
 };
 
 std::ostream& operator<<(std::ostream&, const Vector&);
