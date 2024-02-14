@@ -9,14 +9,15 @@ namespace Nyx {
         Point point;
         Vector eyev;
         Vector normalv;
+        bool inside;
 
-        Hit(const Intersection& intersection, const Point& point, const Vector& eyev, const Vector& normalv)
-            : intersection(intersection), point(point), eyev(eyev), normalv(normalv) {}
+        Hit(const Intersection& intersection, const Point& point, const Vector& eyev, const Vector& normalv, bool inside)
+            : intersection(intersection), point(point), eyev(eyev), normalv(normalv), inside(inside) {}
 
         Hit(const Intersection& intersection, const Ray& ray)
             : Hit(prepare(intersection, ray)) {}
 
-        Hit(const Intersection& intersection) : Hit(intersection, Point(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0)) {}
+        Hit(const Intersection& intersection) : Hit(intersection, Point(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0), false) {}
 
         bool operator==(const Hit& other) const;
 

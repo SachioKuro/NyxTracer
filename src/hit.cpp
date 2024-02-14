@@ -13,7 +13,12 @@ namespace Nyx {
         Point point = ray.position(intersection.t);
         Vector eyev = -ray.direction;
         Vector normalv = intersection.object->normal_at(point);
-        return Hit(intersection, point, eyev, normalv);
+        bool inside = false;
+        if (normalv.dot(eyev) < 0) {
+            inside = true;
+            normalv = -normalv;
+        }
+        return Hit(intersection, point, eyev, normalv, inside);
     }
 
     Hit Hit::prepare(const Ray& ray) const {
