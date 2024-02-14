@@ -7,43 +7,55 @@
 #include "color.hpp"
 #include "tuple.hpp"
 #include "point_light.hpp"
-#include "matrix.hpp"
-#include "ray.hpp"
 #include "sphere.hpp"
 #include "transformation.hpp"
-#include "intersection.hpp"
+#include "world.hpp"
+#include "camera.hpp"
 
 int main() {
-    Nyx::Canvas c(Nyx::WIDTH, Nyx::HEIGHT);
-    Nyx::PointLight light(Nyx::Point(-10, 10, -10), Nyx::Color(1, 1, 1));
-    Nyx::Sphere s = Nyx::Sphere(Nyx::Point(0, 0, 0), 1);
-    s.material.color = Nyx::Color(1, 0.2, 1);
+    Nyx::World world;
+    world.lights.push_back(Nyx::PointLight(Nyx::Point(-4, 10, -10), Nyx::Color(1, 1, 1)));
+    //world.lights.push_back(Nyx::PointLight(Nyx::Point(5, 8, -10), Nyx::Color(1, 0, 0)));
 
-    Nyx::Point ray_origin = Nyx::Point(0, 0, -5);
-    float wall_z = 10;
-    float wall_size = 10;
-    float pixel_size = wall_size / Nyx::WIDTH;
-    float half = wall_size / 2;
+    Nyx::Sphere left_wall = Nyx::Sphere();
+    left_wall.material.color = Nyx::Color(0.9, 0.9, 1);
+    left_wall.set_transform(Nyx::Transformation::identity().scale(10, 0.005, 10).rotateX(M_PI / 2).rotateY(-M_PI / 4).translate(0, 0, 5));
+    world.objects.push_back(&left_wall);
 
-    for (int y = 0; y < Nyx::HEIGHT; y++) {
-        float world_y = half - pixel_size * y;
-        for (int x = 0; x < Nyx::WIDTH; x++) {
-            float world_x = -half + pixel_size * x;
-            Nyx::Point position = Nyx::Point(world_x, world_y, wall_z);
-            Nyx::Ray r = Nyx::Ray(ray_origin, (position - ray_origin).normalize());
+    Nyx::Sphere right_wall = Nyx::Sphere();
+    right_wall.material.color = Nyx::Color(0.9, 0.9, 1);
+    right_wall.set_transform(Nyx::Transformation::identity().scale(10, 0.005, 10).rotateX(M_PI / 2).rotateY(M_PI / 4).translate(0, 0, 5));
+    world.objects.push_back(&right_wall);
 
-            auto xs = s.intersect(r);
-            if (auto hit = Nyx::Intersection::hit(xs); hit) {
-                auto* obj = hit.object;
-                Nyx::Vector normal = s.normal_at(r.position(hit.t));
-                Nyx::Vector eye = -r.direction;
-                Nyx::Color color = obj->material.lighting(light, position, eye, normal);
-                c.write_pixel(x, y, color);
-            }
-        }
-    }
+    Nyx::Sphere floor = Nyx::Sphere();
+    floor.material.color = Nyx::Color(0.9, 0.9, 0.9);
+    floor.set_transform(Nyx::Transformation::identity().scale(10, 0.005, 10).translate(0, 0, 5));
+    world.objects.push_back(&floor);
 
-    Nyx::Image::write_bitmap("sphere.bmp", c.pixels);
+    Nyx::Sphere s1 = Nyx::Sphere();
+    s1.material.color = Nyx::Color(0.1, 1, 1);
+    s1.set_transform(Nyx::Transformation::identity().scale(0.5, 0.5, 0.5).translate(-1, 0.5, 0));
+    world.objects.push_back(&s1);
+
+    Nyx::Sphere s2 = Nyx::Sphere();
+    s2.material.color = Nyx::Color(0.1, 1, 0.1);
+    s2.material.diffuse = 0.7;
+    s2.material.specular = 0.3;
+    s2.set_transform(Nyx::Transformation::identity().scale(0.5, 0.5, 0.5).translate(0.5, 0.5, 0));
+    world.objects.push_back(&s2);
+
+    Nyx::Sphere s3 = Nyx::Sphere();
+    s3.material.color = Nyx::Color(0.1, 0.1, 0.1);
+    s3.material.diffuse = 0.7;
+    s3.material.specular = 0.8;
+    s3.set_transform(Nyx::Transformation::identity().scale(0.75, 0.75, 0.75).translate(-0.15, 0.75, 1));
+    world.objects.push_back(&s3);
+
+    Nyx::Camera camera = Nyx::Camera(Nyx::WIDTH, Nyx::HEIGHT, M_PI / 3);
+    camera.transform = Nyx::Transformation::view(Nyx::Point(0, 2, -5), Nyx::Point(0, 1, 0), Nyx::Vector(0, 1, 0));
+    Nyx::Canvas canvas = camera.render(world);
+
+    Nyx::Image::write_bitmap("sphere.bmp", canvas.pixels);
 
     return 0;
 }

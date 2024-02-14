@@ -17,10 +17,13 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
-add_executable(NyxTracer src/uid.cpp src/main.cpp)
+FILE(GLOB_RECURSE SOURCES "src/*.cpp")
+LIST(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
+
+add_executable(NyxTracer ${SOURCES} src/main.cpp)
 
 macro(package_add_test TESTNAME)
-    add_executable(${TESTNAME} ${ARGN} src/uid.cpp)
+    add_executable(${TESTNAME} ${ARGN} ${SOURCES})
     target_link_libraries(${TESTNAME} gtest gmock gtest_main)
     
     gtest_discover_tests(${TESTNAME}
@@ -45,4 +48,6 @@ package_add_test(
   tests/test_intersection.cpp
   tests/test_point_light.cpp
   tests/test_material.cpp
+  tests/test_world.cpp
+  tests/test_camera.cpp
 )
