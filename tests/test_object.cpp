@@ -1,16 +1,17 @@
 #include <gtest/gtest.h>
 #include "../src/object.hpp"
+#include "../src/sphere.hpp"
 
 TEST(Object, Init) {
     Nyx::UID::reset();
 
-    Nyx::Object o = Nyx::Object();
+    Nyx::Sphere o = Nyx::Sphere();
     EXPECT_EQ(o.id.value, 1);
 
-    Nyx::Object o2 = Nyx::Object();
+    Nyx::Sphere o2 = Nyx::Sphere();
     EXPECT_EQ(o2.id.value, 2);
 
-    Nyx::Object o3 = Nyx::Object();
+    Nyx::Sphere o3 = Nyx::Sphere();
     EXPECT_EQ(o3.id.value, 3);
 
     EXPECT_TRUE(o.id != o2.id);
@@ -22,7 +23,7 @@ TEST(Object, Init) {
 }
 
 TEST(Object, Transformation) {
-    Nyx::Object o = Nyx::Object();
+    Nyx::Sphere o = Nyx::Sphere();
     
     EXPECT_EQ(o.transform, Nyx::Transformation::identity());
 
@@ -35,7 +36,7 @@ TEST(Object, Transformation) {
 }
 
 TEST(Object, Material) {
-    Nyx::Object o = Nyx::Object();
+    Nyx::Sphere o = Nyx::Sphere();
     
     EXPECT_EQ(o.material, Nyx::Material());
 

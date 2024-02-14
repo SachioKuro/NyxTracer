@@ -12,8 +12,9 @@ namespace Nyx {
         float radius;
 
         Sphere(const Point& center, float radius) : center(center), radius(radius) {}
+        Sphere() : center(Point(0, 0, 0)), radius(1) {}
 
-        std::vector<Intersection> intersect(const Ray& ray) const {
+        virtual std::vector<Intersection> intersect(const Ray& ray) const override {
             Ray rayOS = this->inverse_transform * ray;
             Vector sphere_to_ray = rayOS.origin - center;
             float a = rayOS.direction.dot(rayOS.direction);
@@ -32,10 +33,13 @@ namespace Nyx {
                 std::swap(t1, t2);
             }
 
-            return {Intersection(t1, this), Intersection(t2, this)};
+            return {
+                Intersection(t1, this),
+                Intersection(t2, this)
+            };
         }
 
-        Vector normal_at(const Point& world_point) const {
+        virtual Vector normal_at(const Point& world_point) const override {
             Point object_point = this->inverse_transform * world_point;
             Vector object_normal = object_point - Point(0, 0, 0);
             Vector world_normal = this->inverse_transpose_transform * object_normal;
