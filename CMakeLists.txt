@@ -45,6 +45,7 @@ package_add_test(
   tests/test_uid.cpp
   tests/test_object.cpp
   tests/test_sphere.cpp
+  tests/test_plane.cpp
   tests/test_intersection.cpp
   tests/test_point_light.cpp
   tests/test_material.cpp
