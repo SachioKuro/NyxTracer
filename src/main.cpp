@@ -15,21 +15,21 @@
 int main() {
     Nyx::World world;
     world.lights.push_back(Nyx::PointLight(Nyx::Point(-4, 10, -10), Nyx::Color(1, 1, 1)));
-    //world.lights.push_back(Nyx::PointLight(Nyx::Point(5, 8, -10), Nyx::Color(1, 0, 0)));
+    //world.lights.push_back(Nyx::PointLight(Nyx::Point(5, 8, -10), Nyx::Color(0.5, 0, 0.5)));
 
     Nyx::Sphere left_wall = Nyx::Sphere();
     left_wall.material.color = Nyx::Color(0.9, 0.9, 1);
-    left_wall.set_transform(Nyx::Transformation::identity().scale(10, 0.005, 10).rotateX(M_PI / 2).rotateY(-M_PI / 4).translate(0, 0, 5));
+    left_wall.set_transform(Nyx::Transformation::identity().scale(10, 0.1, 10).rotateX(M_PI / 2).rotateY(-M_PI / 4).translate(0, 0, 5));
     world.objects.push_back(&left_wall);
 
     Nyx::Sphere right_wall = Nyx::Sphere();
     right_wall.material.color = Nyx::Color(0.9, 0.9, 1);
-    right_wall.set_transform(Nyx::Transformation::identity().scale(10, 0.005, 10).rotateX(M_PI / 2).rotateY(M_PI / 4).translate(0, 0, 5));
+    right_wall.set_transform(Nyx::Transformation::identity().scale(10, 0.1, 10).rotateX(M_PI / 2).rotateY(M_PI / 4).translate(0, 0, 5));
     world.objects.push_back(&right_wall);
 
     Nyx::Sphere floor = Nyx::Sphere();
     floor.material.color = Nyx::Color(0.9, 0.9, 0.9);
-    floor.set_transform(Nyx::Transformation::identity().scale(10, 0.005, 10).translate(0, 0, 5));
+    floor.set_transform(Nyx::Transformation::identity().scale(10, 0.1, 10).translate(0, 0, 5));
     world.objects.push_back(&floor);
 
     Nyx::Sphere s1 = Nyx::Sphere();

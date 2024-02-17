@@ -69,3 +69,13 @@ TEST(Intersection, HitRandomOrder) {
         ASSERT_EQ(*hit.intersection.object, s);
     }
 }
+
+TEST(Intersection, HitOverPoint) {
+    Nyx::Sphere s = Nyx::Sphere();
+    s.set_transform(Nyx::Transformation::translation(0, 0, 1));
+    Nyx::Ray r = Nyx::Ray(Nyx::Point(0, 0, -5), Nyx::Vector(0, 0, 1));
+    Nyx::Intersection i = Nyx::Intersection(5, &s);
+    Nyx::Hit hit = Nyx::Hit(i, r);
+    ASSERT_GT(hit.over_point.z, -Nyx::EPSILON * 6);
+    ASSERT_GT(hit.point.z, hit.over_point.z);
+}

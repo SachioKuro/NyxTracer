@@ -67,7 +67,7 @@ namespace Nyx {
         }
 
         friend std::ostream& operator<<(std::ostream& os, const Color& c) {
-            os << std::fixed << std::setprecision(3)
+            os << std::fixed << std::setprecision(5)
                 << "Color(" << c.r << ", " << c.g << ", " << c.b << ")";
             return os;
         }
