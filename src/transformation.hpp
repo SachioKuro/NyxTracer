@@ -131,6 +131,27 @@ namespace Nyx {
         Transformation transpose() const {
             return {transformationMatrix.transpose()};
         }
+
+        static Transformation view(const Point& from, const Point& to, const Vector& up) {
+            Vector forward = (to - from).normalize();
+            Vector left = forward.cross(up.normalize());
+            Vector trueUp = left.cross(forward);
+            Matrix<4> orientation = Matrix<4>::identity();
+            orientation(0, 0) = left.x;
+            orientation(0, 1) = left.y;
+            orientation(0, 2) = left.z;
+            orientation(1, 0) = trueUp.x;
+            orientation(1, 1) = trueUp.y;
+            orientation(1, 2) = trueUp.z;
+            orientation(2, 0) = -forward.x;
+            orientation(2, 1) = -forward.y;
+            orientation(2, 2) = -forward.z;
+            return orientation * Transformation::identity().translate(-from.x, -from.y, -from.z);
+        }
+
+        friend Transformation operator*(const Matrix<4>& m, const Transformation& t) {
+            return {m * t.transformationMatrix};
+        }
     private:
         Matrix<4> transformationMatrix;
     };

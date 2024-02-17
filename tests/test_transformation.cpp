@@ -205,3 +205,57 @@ TEST(Transformation, Fluid) {
         .rotateX(M_PI / 2).scale(5, 5, 5).translate(10, 5, 7) * p;
     EXPECT_EQ(p2, Nyx::Point(15, 0, 7));
 }
+
+TEST(Transformation, Identity) {
+    Nyx::Transformation T = Nyx::Transformation::identity();
+    Nyx::Tuple p = Nyx::Point(1, 0, 1);
+    Nyx::Tuple p2 = T * p;
+    EXPECT_EQ(p2, p);
+}
+
+TEST(Transformation, Inverse) {
+    Nyx::Matrix<4> T = Nyx::Transformation::identity().rotateX(M_PI / 4).shear(0, 0, 1, 0, 0, 0).matrix();
+    Nyx::Matrix<4> TInv = T.inverse();
+    Nyx::Tuple p = Nyx::Point(1, 0, 1);
+    Nyx::Tuple p2 = T * p;
+    Nyx::Tuple p3 = TInv * p2;
+    EXPECT_EQ(p3, p);
+}
+
+TEST(Transfomration, ViewDefault) {
+    Nyx::Point from = Nyx::Point(0, 0, 0);
+    Nyx::Point to = Nyx::Point(0, 0, -1);
+    Nyx::Vector up = Nyx::Vector(0, 1, 0);
+    Nyx::Transformation T = Nyx::Transformation::view(from, to, up);
+    EXPECT_EQ(T, Nyx::Transformation::identity());
+}
+
+TEST(Transformation, ViewPositiveZDirection) {
+    Nyx::Point from = Nyx::Point(0, 0, 0);
+    Nyx::Point to = Nyx::Point(0, 0, 1);
+    Nyx::Vector up = Nyx::Vector(0, 1, 0);
+    Nyx::Transformation T = Nyx::Transformation::view(from, to, up);
+    EXPECT_EQ(T, Nyx::Transformation::identity().scale(-1, 1, -1));
+}
+
+TEST(Transformation, ViewMovesWorld) {
+    Nyx::Point from = Nyx::Point(0, 0, 8);
+    Nyx::Point to = Nyx::Point(0, 0, 0);
+    Nyx::Vector up = Nyx::Vector(0, 1, 0);
+    Nyx::Transformation T = Nyx::Transformation::view(from, to, up);
+    EXPECT_EQ(T, Nyx::Transformation::translation(0, 0, -8));
+}
+
+TEST(Transformation, ViewArbitrary) {
+    Nyx::Point from = Nyx::Point(1, 3, 2);
+    Nyx::Point to = Nyx::Point(4, -2, 8);
+    Nyx::Vector up = Nyx::Vector(1, 1, 0);
+    Nyx::Transformation T = Nyx::Transformation::view(from, to, up);
+    Nyx::Matrix<4> expected = {
+        -0.50709, 0.50709, 0.67612, -2.36643,
+        0.76772, 0.60609, 0.12122, -2.82843,
+        -0.35857, 0.59761, -0.71714, 0.00000,
+        0.00000, 0.00000, 0.00000, 1.00000
+    };
+    EXPECT_EQ(T.matrix(), expected);
+}

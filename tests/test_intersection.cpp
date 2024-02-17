@@ -2,7 +2,9 @@
 #include <algorithm>
 #include <vector>
 #include "../src/intersection.hpp"
+#include "../src/hit.hpp"
 #include "../src/sphere.hpp"
+#include "../src/ray.hpp"
 
 TEST(Intersection, Init) {
     Nyx::Sphere s = Nyx::Sphere(Nyx::Point(0, 0, 0), 1.f);
@@ -13,6 +15,7 @@ TEST(Intersection, Init) {
 
 TEST(Intersection, Hit) {
     Nyx::Sphere s = Nyx::Sphere(Nyx::Point(0, 0, 0), 1.f);
+    Nyx::Ray r = Nyx::Ray(Nyx::Point(0, 0, -5), Nyx::Vector(0, 0, 1));
     Nyx::Intersection i1 = Nyx::Intersection(3.5f, &s);
     Nyx::Intersection i2 = Nyx::Intersection(2.5f, &s);
     Nyx::Intersection i3 = Nyx::Intersection(1.5f, &s);
@@ -24,13 +27,14 @@ TEST(Intersection, Hit) {
 
     std::vector<Nyx::Intersection> xs = {i1, i2, i3, i4, i5, i6, i7, i8};
 
-    Nyx::Intersection i = Nyx::Intersection::hit(xs);
-    EXPECT_EQ(i.t, 0.5);
-    EXPECT_EQ(*i.object, s);
+    Nyx::Hit hit = Nyx::Intersection::hit(xs, r);
+    EXPECT_EQ(hit.intersection.t, 0.5);
+    EXPECT_EQ(*hit.intersection.object, s);
 }
 
 TEST(Intersection, HitNegative) {
     Nyx::Sphere s = Nyx::Sphere(Nyx::Point(0, 0, 0), 1.f);
+    Nyx::Ray r = Nyx::Ray(Nyx::Point(0, 0, -5), Nyx::Vector(0, 0, 1));
     Nyx::Intersection i5 = Nyx::Intersection(-1.5f, &s);
     Nyx::Intersection i6 = Nyx::Intersection(-2.5f, &s);
     Nyx::Intersection i7 = Nyx::Intersection(-3.5f, &s);
@@ -38,13 +42,14 @@ TEST(Intersection, HitNegative) {
 
     std::vector<Nyx::Intersection> xs = {i5, i6, i7, i8};
 
-    Nyx::Intersection i = Nyx::Intersection::hit(xs);
-    EXPECT_EQ(i.t, 0);
-    EXPECT_EQ(i.object, nullptr);
+    Nyx::Hit hit = Nyx::Intersection::hit(xs, r);
+    EXPECT_EQ(hit.intersection.t, 0);
+    EXPECT_EQ(hit.intersection.object, nullptr);
 }
 
 TEST(Intersection, HitRandomOrder) {
     Nyx::Sphere s = Nyx::Sphere(Nyx::Point(0, 0, 0), 1.f);
+    Nyx::Ray r = Nyx::Ray(Nyx::Point(0, 0, -5), Nyx::Vector(0, 0, 1));
     Nyx::Intersection i1 = Nyx::Intersection(3.5f, &s);
     Nyx::Intersection i2 = Nyx::Intersection(2.5f, &s);
     Nyx::Intersection i3 = Nyx::Intersection(1.5f, &s);
@@ -55,12 +60,22 @@ TEST(Intersection, HitRandomOrder) {
     Nyx::Intersection i8 = Nyx::Intersection(-4.5f, &s);
 
     std::vector<Nyx::Intersection> xs = {i1, i2, i3, i4, i5, i6, i7, i8};
-    Nyx::Intersection hit = Nyx::Intersection::hit(xs);
+    Nyx::Hit hit = Nyx::Intersection::hit(xs, r);
 
     for (int i = 0; i < 100; i++) {
         std::random_shuffle(xs.begin(), xs.end());
-        hit = Nyx::Intersection::hit(xs);
-        ASSERT_EQ(hit.t, 0.5);
-        ASSERT_EQ(*hit.object, s);
+        hit = Nyx::Intersection::hit(xs, r);
+        ASSERT_EQ(hit.intersection.t, 0.5);
+        ASSERT_EQ(*hit.intersection.object, s);
     }
+}
+
+TEST(Intersection, HitOverPoint) {
+    Nyx::Sphere s = Nyx::Sphere();
+    s.set_transform(Nyx::Transformation::translation(0, 0, 1));
+    Nyx::Ray r = Nyx::Ray(Nyx::Point(0, 0, -5), Nyx::Vector(0, 0, 1));
+    Nyx::Intersection i = Nyx::Intersection(5, &s);
+    Nyx::Hit hit = Nyx::Hit(i, r);
+    ASSERT_GT(hit.over_point.z, -Nyx::EPSILON * 6);
+    ASSERT_GT(hit.point.z, hit.over_point.z);
 }

@@ -35,6 +35,13 @@ namespace Nyx {
             return Color{r + c.r, g + c.g, b + c.b};
         }
 
+        Color operator+=(const Color& c) {
+            r += c.r;
+            g += c.g;
+            b += c.b;
+            return *this;
+        }
+
         Color operator-(const Color& c) const {
             return Color{r - c.r, g - c.g, b - c.b};
         }
@@ -60,7 +67,7 @@ namespace Nyx {
         }
 
         friend std::ostream& operator<<(std::ostream& os, const Color& c) {
-            os << std::fixed << std::setprecision(3)
+            os << std::fixed << std::setprecision(5)
                 << "Color(" << c.r << ", " << c.g << ", " << c.b << ")";
             return os;
         }
