@@ -64,6 +64,16 @@ TEST(Material, LightingEyeBetweenLightAndSurface) {
     EXPECT_EQ(result, Nyx::Color(1.9, 1.9, 1.9));
 }
 
+TEST(Material, LightingEyeBetweenLightAndSurfaceInShadow) {
+    Nyx::Material m = Nyx::Material();
+    Nyx::Point position = Nyx::Point(0, 0, 0);
+    Nyx::Vector eye = Nyx::Vector(0, 0, -1);
+    Nyx::Vector normal = Nyx::Vector(0, 0, -1);
+    Nyx::PointLight light = Nyx::PointLight(Nyx::Point(0, 0, -10), Nyx::Color(1, 1, 1));
+    Nyx::Color result = m.lighting(light, position, eye, normal, true);
+    EXPECT_EQ(result, Nyx::Color(0.1, 0.1, 0.1));
+}
+
 TEST(Material, LightingEyeOffset45) {
     Nyx::Material m = Nyx::Material();
     Nyx::Point position = Nyx::Point(0, 0, 0);
@@ -91,7 +101,7 @@ TEST(Material, LightingEyeInPathOfReflectionVector) {
     Nyx::Vector normal = Nyx::Vector(0, 0, -1);
     Nyx::PointLight light = Nyx::PointLight(Nyx::Point(0, 10, -10), Nyx::Color(1, 1, 1));
     Nyx::Color result = m.lighting(light, position, eye, normal);
-    EXPECT_EQ(result, Nyx::Color(1.6364, 1.6364, 1.6364));
+    EXPECT_EQ(result, Nyx::Color(1.63639, 1.63639, 1.63639));
 }
 
 TEST(Material, LightingLightBehindSurface) {

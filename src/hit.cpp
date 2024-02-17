@@ -1,5 +1,7 @@
 #include "hit.hpp"
 
+#include "config.hpp"
+
 namespace Nyx {
     bool Hit::operator==(const Hit& other) const {
         return intersection == other.intersection;
@@ -18,7 +20,8 @@ namespace Nyx {
             inside = true;
             normalv = -normalv;
         }
-        return Hit(intersection, point, eyev, normalv, inside);
+        Point over_point = point + normalv * EPSILON * 5;
+        return Hit(intersection, point, over_point, eyev, normalv, inside);
     }
 
     Hit Hit::prepare(const Ray& ray) const {

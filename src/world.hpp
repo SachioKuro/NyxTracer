@@ -23,6 +23,8 @@ namespace Nyx {
 
         Color color_at(const Ray& ray) const;
 
+        bool is_shadowed(const Point& point, const PointLight& light) const;
+
         friend std::ostream& operator<<(std::ostream& os, const World& w);
     };
 }

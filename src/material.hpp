@@ -20,11 +20,15 @@ namespace Nyx {
                 std::abs(shininess - m.shininess) < EPSILON;
         }
 
-        Color lighting(const PointLight& light, const Point& position, const Vector& eye, const Vector& normal) const {
+        Color lighting(const PointLight& light, const Point& position, const Vector& eye, const Vector& normal, bool inShadow = false) const {
             Color effective_color = color * light.intensity;
-            Vector lightv = (light.position - position).normalize();
             Color ambient_color = effective_color * ambient;
 
+            if (inShadow) {
+                return ambient_color;
+            }
+            
+            Vector lightv = (light.position - position).normalize();
             float light_dot_normal = lightv.dot(normal);
             if (light_dot_normal <= 0) {
                 return ambient_color;

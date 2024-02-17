@@ -29,7 +29,8 @@ namespace Nyx {
     Color World::shade_hit(const Hit& hit) const {
         Color color = Color(0, 0, 0);
         for (const auto& light : lights) {
-            color += hit.intersection.object->material.lighting(light, hit.point, hit.eyev, hit.normalv);
+            bool in_shadow = is_shadowed(hit.over_point, light);
+            color += hit.intersection.object->material.lighting(light, hit.over_point, hit.eyev, hit.normalv, in_shadow);
         }
         return color;
     }
@@ -41,6 +42,16 @@ namespace Nyx {
             return shade_hit(hit);
         }
         return Color(0, 0, 0);
+    }
+
+    bool World::is_shadowed(const Point& point, const PointLight& light) const {
+        auto v = light.position - point;
+        auto distance = v.magnitude();
+        auto direction = v.normalize();
+        auto r = Ray(point, direction);
+        auto xs = intersect(r);
+        auto h = Intersection::hit(xs, r);
+        return h && h.intersection.t < distance;
     }
 
     std::ostream& operator<<(std::ostream& os, const World& w) {
