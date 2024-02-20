@@ -83,7 +83,7 @@ TEST(World, ColorAtInside) {
     w.objects[1]->material.ambient = 1;
     Nyx::Ray r = Nyx::Ray(Nyx::Point(0, 0, 0.75), Nyx::Vector(0, 0, -1));
     auto c = w.color_at(r);
-    EXPECT_EQ(c, w.objects[1]->material.color);
+    EXPECT_EQ(c, w.objects[1]->material.pattern->at(Nyx::Point(0, 0, 0)));
 }
 
 TEST(World, IsShadowedNoShadow) {

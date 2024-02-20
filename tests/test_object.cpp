@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "../src/object.hpp"
 #include "../src/sphere.hpp"
+#include "../src/constant_pattern.hpp"
 
 TEST(Object, Init) {
     Nyx::UID::reset();
@@ -41,7 +42,7 @@ TEST(Object, Material) {
     EXPECT_EQ(o.material, Nyx::Material());
 
     Nyx::Material m = Nyx::Material();
-    m.color = Nyx::Color(1, 0, 0);
+    m.pattern = std::make_shared<Nyx::ConstantPattern>(Nyx::Color(1, 1, 1));
     m.ambient = 0.1;
     m.diffuse = 0.9;
     m.specular = 0.9;
@@ -49,4 +50,5 @@ TEST(Object, Material) {
     o.material = m;
 
     EXPECT_EQ(o.material, m);
+
 }
