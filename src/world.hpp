@@ -13,8 +13,6 @@ namespace Nyx {
         std::vector<Object*> objects;
         std::vector<PointLight> lights;
 
-        World() : objects(), lights() {}
-
         static World default_world();
 
         std::vector<Intersection> intersect(const Ray& ray) const;

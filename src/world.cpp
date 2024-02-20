@@ -1,12 +1,14 @@
+#include <memory>
 #include "world.hpp"
 #include "hit.hpp"
+#include "constant_pattern.hpp"
 
 namespace Nyx {
     World World::default_world() {
             World w = World();
             w.lights.push_back(PointLight(Point(-10, 10, -10), Color(1, 1, 1)));
             Sphere* s1 = new Sphere();
-            s1->material.color = Color(0.8, 1.0, 0.6);
+            s1->material.pattern = std::make_shared<ConstantPattern>(Color(0.8, 1.0, 0.6));
             s1->material.diffuse = 0.7;
             s1->material.specular = 0.2;
             w.objects.push_back(s1);
@@ -30,7 +32,9 @@ namespace Nyx {
         Color color = Color(0, 0, 0);
         for (const auto& light : lights) {
             bool in_shadow = is_shadowed(hit.over_point, light);
-            color += hit.intersection.object->material.lighting(light, hit.over_point, hit.eyev, hit.normalv, in_shadow);
+            color += hit.intersection.object->material.lighting(
+                light, hit.over_point, hit.eyev, hit.normalv, hit.intersection.object->inverse_transform, in_shadow
+            );
         }
         return color;
     }

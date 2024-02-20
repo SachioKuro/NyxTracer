@@ -51,4 +51,8 @@ package_add_test(
   tests/test_material.cpp
   tests/test_world.cpp
   tests/test_camera.cpp
+  tests/test_stripe_pattern.cpp
+  tests/test_gradient_pattern.cpp
+  tests/test_ring_pattern.cpp
+  tests/test_checker3D_pattern.cpp
 )

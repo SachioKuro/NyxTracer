@@ -1,27 +1,38 @@
 #pragma once
 
 #include <cmath>
+#include <memory>
+#include <ostream>
 #include "point_light.hpp"
 #include "color.hpp"
+#include "pattern.hpp"
+#include "constant_pattern.hpp"
 #include "config.hpp"
 
 namespace Nyx {
     struct Material {
-        Color color;
+        std::shared_ptr<Pattern> pattern;
         float ambient, diffuse, specular, shininess;
 
-        Material() : color(Color{1.f, 1.f, 1.f}), ambient(0.1f), diffuse(0.9f), specular(0.9f), shininess(200.f) {}
+        Material() : pattern(std::make_shared<ConstantPattern>(Color{1.f, 1.f, 1.f})), ambient(0.1f), diffuse(0.9f), specular(0.9f), shininess(200.f) {}
 
         bool operator==(const Material& m) const {
-            return color == m.color &&
+            return *pattern == m.pattern &&
                 std::abs(ambient - m.ambient) < EPSILON &&
                 std::abs(diffuse - m.diffuse) < EPSILON &&
                 std::abs(specular - m.specular) < EPSILON &&
                 std::abs(shininess - m.shininess) < EPSILON;
         }
 
-        Color lighting(const PointLight& light, const Point& position, const Vector& eye, const Vector& normal, bool inShadow = false) const {
-            Color effective_color = color * light.intensity;
+        Color lighting(
+            const PointLight& light,
+            const Point& position,
+            const Vector& eye,
+            const Vector& normal,
+            const Transformation& object_transform = Transformation::identity(),
+            bool inShadow = false
+        ) const {
+            Color effective_color = pattern->at_object(object_transform * position) * light.intensity;
             Color ambient_color = effective_color * ambient;
 
             if (inShadow) {
@@ -44,6 +55,11 @@ namespace Nyx {
             Color specular_color = light.intensity * specular * factor;
 
             return ambient_color + diffuse_color + specular_color;
+        }
+
+        friend std::ostream& operator<<(std::ostream& os, const Material& m) {
+            os << "Material(" << *m.pattern << ", " << m.ambient << ", " << m.diffuse << ", " << m.specular << ", " << m.shininess << ")";
+            return os;
         }
     };
 }
